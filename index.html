@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隱形風暴：部門危機的決策考驗</title>
+    <style>
+        :root {
+            --bg-color: #f1f5f9;
+            --text-main: #1e293b;
+            --text-light: #64748b;
+            --accent-color: #0f172a;
+            --primary-color: #2563eb;
+            --card-bg: #ffffff;
+            --border-radius: 16px;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --highlight: #f0f9ff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        #web-container {
+            width: 100%;
+            max-width: 1000px;
+            min-height: 100vh;
+            background-color: var(--card-bg);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        @media (min-width: 1024px) {
+            #web-container {
+                min-height: 92vh;
+                margin: 30px 0;
+                border-radius: 24px;
+                overflow: hidden;
+            }
+        }
+
+        #top-nav {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        #top-nav.active { display: flex; }
+        #back-btn {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        #back-btn:hover { color: var(--accent-color); background-color: #f1f5f9; }
+        #nav-title { font-weight: 700; color: var(--text-main); font-size: 18px; letter-spacing: 1px; }
+
+        .fade-in { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            padding: 50px 70px;
+            box-sizing: border-box;
+            flex-grow: 1;
+        }
+        .screen.active { display: flex; }
+
+        #home-screen {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        h1 { font-size: 46px; font-weight: 800; margin-bottom: 24px; color: var(--accent-color); letter-spacing: 2px; }
+        .subtitle { color: var(--text-light); font-size: 19px; margin-bottom: 60px; line-height: 1.8; max-width: 650px; }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 20px;
+            font-weight: 600;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+        .btn-primary:hover { background-color: #1d4ed8; transform: translateY(-3px); box-shadow: 0 15px 35px rgba(37, 99, 235, 0.4); }
+
+        .header {
+            font-size: 14px;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 16px;
+            font-weight: 800;
+        }
+
+        .story-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 35px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .story-text { font-size: 18px; line-height: 1.8; margin-bottom: 24px; color: #334155; }
+        
+        .dialogue-box {
+            background-color: #f8fafc;
+            padding: 26px 32px;
+            border-radius: var(--border-radius);
+            margin-bottom: 28px;
+            border-left: 5px solid var(--accent-color);
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        #choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            background-color: #ffffff;
+            border: 2px solid #e2e8f0;
+            padding: 24px 32px;
+            border-radius: var(--border-radius);
+            font-size: 17px;
+            color: #475569;
+            text-align: left;
+            cursor: pointer;
+            line-height: 1.6;
+            transition: all 0.2s ease;
+        }
+        .choice-btn:hover { border-color: var(--primary-color); transform: translateX(5px); background-color: #f8fafc; }
+        .choice-btn b { color: var(--accent-color); display: block; margin-bottom: 10px; font-size: 19px; }
+
+        .selected-choice-review {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 2px solid #cbd5e1;
+            font-size: 18px;
+            line-height: 1.6;
+            color: #334155;
+            position: relative;
+        }
+        .selected-choice-review::before {
+            content: '📌 你的決策';
+            position: absolute;
+            top: -14px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+        }
+        .selected-choice-review strong {
+            color: var(--accent-color);
+            font-size: 20px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .feedback-box {
+            background-color: #fff;
+            padding: 32px;
+            border-radius: var(--border-radius);
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+        .feedback-title { font-weight: bold; margin-bottom: 20px; font-size: 22px; }
+        .danger { border-top: 6px solid var(--danger); }
+        .danger .feedback-title { color: var(--danger); }
+        .warning { border-top: 6px solid var(--warning); }
+        .warning .feedback-title { color: var(--warning); }
+        .success { border-top: 6px solid var(--success); }
+        .success .feedback-title { color: var(--success); }
+
+        .mitigation-box {
+            background-color: var(--highlight);
+            border-left: 6px solid #0284c7;
+            padding: 32px;
+            margin-bottom: 40px;
+            border-radius: 0 16px 16px 0;
+            font-size: 17px;
+            line-height: 1.8;
+            color: #0f172a;
+        }
+        .mitigation-box b { color: #0284c7; display: block; margin-bottom: 16px; font-size: 19px; }
+
+        .score-board {
+            text-align: center;
+            padding: 40px;
+            background: var(--accent-color);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+        .rank-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            background: var(--primary-color);
+            border-radius: 30px;
+            font-size: 22px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            margin-top: 15px;
+        }
+
+        .ending-story {
+            background-color: #f8fafc;
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 24px;
+            border-left: 4px solid var(--text-light);
+            font-size: 17px;
+            line-height: 1.8;
+        }
+        .ending-story h4 { margin-top: 0; margin-bottom: 16px; color: var(--accent-color); font-size: 20px; font-weight: 800;}
+        .ending-story p { margin-bottom: 16px; }
+        .ending-story p:last-child { margin-bottom: 0; }
+    </style>
+</head>
+<body>
+
+    <div id="web-container">
+        <div id="top-nav">
+            <div id="back-btn" onclick="goBack()">◀ 回上一步</div>
+            <div id="nav-title">隱形風暴：管理決策模擬器</div>
+            <div style="width: 70px;"></div>
+        </div>
+
+        <div id="home-screen" class="screen active fade-in">
+            <h1>隱形風暴</h1>
+            <div class="subtitle">企業防範職場霸凌與效能重塑<br><br>每個決策都沒有標準答案。<br>帶領團隊前行，發掘你的管理影響力！</div>
+            <button class="btn-primary" onclick="startGame()">開始推演</button>
+        </div>
+
+        <div id="game-screen" class="screen">
+            <div class="header" id="phase-title">加載中...</div>
+            <div id="story-container"></div>
+            <div id="choices-container"></div>
+        </div>
+    </div>
+
+    <script>
+        let historyStack = [];
+        let currentNodeId = 'home';
+        let userChoices = {};
+
+        const gameData = {
+            phase1_intro: {
+                title: "PHASE 1 : 殘缺交付與向上升級",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
+                story: `
+                    <div class="story-text">阿泰是新進資深員工，負責推動流程優化專案，需要部門老臣「老軒」提供歷史數據。</div>
+                    <div class="story-text">老軒表面配合，但寄來的檔案缺漏百出、格式全亂。阿泰請老軒重新整理，老軒推託：「系統匯出來就是這樣，我最近客戶專案滿載，真的沒空幫你手工洗數據。」</div>
+                    <div class="story-text">來回拉扯一個月，專案根本無法進行。阿泰敲了你的辦公室門：</div>
+                    <div class="dialogue-box">
+                        <b>阿泰：</b><br>「主管，這專案推不動。老軒一直給殘缺資料，請他補齊就說很忙。沒有乾淨的數據，專案絕對開天窗，請你協助。」
+                    </div>
+                    <div class="story-text">你詢問老軒，老軒卻一臉無辜：</div>
+                    <div class="dialogue-box">
+                        <b>老軒：</b><br>「主管，我絕對全力配合啊！資料我第一天就給他了。他身為專案負責人，自己不具備整併資料的能力，怎麼反而怪我不幫他做苦工？」
+                    </div>
+                    <div class="story-text">面對阿泰的求救與老軒的「反咬一口」，身為主管，第一步該怎麼做？</div>
+                `,
+                choices: [
+                    { phase: 1, points: 10, text: "<b>【機會教育】給予阿泰磨練機會</b><br>告訴阿泰：跨部門溝通與資料整併是專案負責人的重要能力，請他先試著將現有資料進行清洗。", next: "phase1_resultA" },
+                    { phase: 1, points: 25, text: "<b>【明確死線】要求老軒以大局為重</b><br>找兩人開會，要求老軒於本週五前提供符合專案所需格式的完整數據給阿泰。", next: "phase1_resultB" },
+                    { phase: 1, points: 5,  text: "<b>【主管支援】親自下場協助溝通</b><br>請阿泰列出缺漏清單，由我親自去和老軒溝通對接，加速推進進度。", next: "phase1_resultC" }
+                ]
+            },
+            phase1_resultA: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 落入老臣的卸責陷阱</div><div class="story-text">阿泰覺得主管在包庇老鳥。老軒則確認了「只要隨便丟資料交差，主管就會買單」。阿泰熬夜硬洗數據引發更多錯誤，專案進度落後。</div></div>
+                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>老鳥最愛用「我給了，是他不會用」掩飾不作為。主管應訂出透明的資料格式規範與檢核表，而非檢討受害者。</div>
+                `,
+                choices: [{ text: "進入 PHASE 2：隱性排擠", next: "phase2_intro" }]
+            },
+            phase1_resultB: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box warning"><div class="feedback-title">⚠️ 惡意配合 (Malicious Compliance)</div><div class="story-text">老軒表面答應，週五交了一份「格式全對但邏輯全錯」的報表，逢人便說「主管逼我做白工」。阿泰拿到後依然無法使用。</div></div>
+                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>方向正確，但強壓底線若無客觀的檢核機制，會換來隱性破壞。主管應親自參與首次驗收，剝奪其私下惡搞空間。</div>
+                `,
+                choices: [{ text: "進入 PHASE 2：隱性排擠", next: "phase2_intro" }]
+            },
+            phase1_resultC: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 主管降級為高級秘書</div><div class="story-text">專案暫時得救，但老軒學到「只要隨便給，主管就會幫忙擦屁股」；阿泰則覺得被架空。團隊協作機制徹底破裂。</div></div>
+                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>親自出馬是管理大忌，等於默許資深員工擺爛。應建立公開的交接規範，要求老軒按標準交付。</div>
+                `,
+                choices: [{ text: "進入 PHASE 2：隱性排擠", next: "phase2_intro" }]
+            },
+
+            phase2_intro: {
+                title: "PHASE 2 : 隱性排擠與冷暴力",
+                image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
+                story: `
+                    <div class="story-text">在部門會議上，只要阿泰發言，老軒就不發一語，但刻意對旁人嘆氣、交換眼神、滑手機。其他同事怕得罪老軒，也開始排擠阿泰。</div>
+                    <div class="story-text">阿泰承受不住，私下找你：</div>
+                    <div class="dialogue-box">
+                        <b>阿泰：</b><br>「主管，我覺得大家都在針對我。群組發問沒人回，開會大家都用看笑話的眼神看我... 我想退出專案，或者請你把我調走。」
+                    </div>
+                `,
+                choices: [
+                    { phase: 2, points: 5,  text: "<b>【心理支持】鼓勵阿泰用專業說話</b><br>推動新流程本來就會遇到老員工的防衛心。請他把焦點放在事情上，用專業慢慢贏得信任。", next: "phase2_resultA" },
+                    { phase: 2, points: 25, text: "<b>【行為導正】單獨約談點出問題</b><br>單獨約談老軒，點出他在會議上的非語言行為（如滑手機、嘆氣）已影響團隊氛圍。", next: "phase2_resultB" },
+                    { phase: 2, points: 10, text: "<b>【資源調度】調整專案分工</b><br>為保護阿泰身心與進度，將需要依賴老軒的模組交給另一位擅長溝通的同事負責。", next: "phase2_resultC" }
+                ]
+            },
+            phase2_resultA: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 受害者有罪論</div><div class="story-text">阿泰解讀為「主管覺得我能力不夠、無法融入團隊」。隔週阿泰直接遞交離職單，並向 HR 控訴你包庇霸凌。</div></div>
+                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>冷暴力會摧毀團隊效能。應在團隊會議當下，溫和但堅定指正：「老軒，別人報告時我們不滑手機。」</div>
+                `,
+                choices: [{ text: "進入 PHASE 3：申訴炸彈", next: "phase3_intro" }]
+            },
+            phase2_resultB: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box warning"><div class="feedback-title">⚠️ 抓不到把柄的狡辯</div><div class="story-text">老軒秒回：「我看手機是回客戶訊息！」隨後在群組暗諷主管搞文字獄偏袒新人，阿泰被更徹底地孤立。</div></div>
+                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>私下面談會淪為各說各話。要在團隊會議當下，公開、明確地指正行為，讓全團隊看見底線。</div>
+                `,
+                choices: [{ text: "進入 PHASE 3：申訴炸彈", next: "phase3_intro" }]
+            },
+            phase2_resultC: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 默許毒性文化</div><div class="story-text">向全公司宣告：「只要你夠難搞，就可以不用配合變革，主管拿你沒轍。」老軒成為部門土皇帝。</div></div>
+                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>逃避無法解決根本問題。必須直面衝突，在團隊會議當下公開指正不當行為。</div>
+                `,
+                choices: [{ text: "進入 PHASE 3：申訴炸彈", next: "phase3_intro" }]
+            },
+
+            phase3_intro: {
+                title: "PHASE 3 : 申訴炸彈與法規紅線",
+                image: "https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?q=80&w=1000&auto=format&fit=crop",
+                story: `動態生成內容`,
+                choices: []
+            },
+            phase3_resultA: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box warning"><div class="feedback-title">⚠️ 兩敗俱傷的合規</div><div class="story-text">老軒感到受辱帶客戶跳槽。調查最終因缺乏直接證據不成立，公司損失重大業績，阿泰最終也離職。</div></div>
+                    <div class="mitigation-box"><b>導師解析：話語權的重新定調</b>合乎法規但缺乏商業彈性。若保留老軒並將阿泰調離，主管必須宣告業務由自己覆核，親上火線。</div>
+                `,
+                choices: [{ text: "進入 PHASE 4：制度重塑", next: "phase4_intro" }]
+            },
+            phase3_resultB: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 踩踏法律紅線 (吃案)</div><div class="story-text">阿泰偷偷錄音並向勞工局檢舉。公司面臨未盡防護義務的重罰與公關危機，高階主管誠信破產，面臨官司。</div></div>
+                    <div class="mitigation-box"><b>導師解析：吃案是絕對紅線</b>面對醫療證明，「吃案與私下搓湯圓」是絕對不能踩的法律紅線。必須立刻通報並物理隔離。</div>
+                `,
+                choices: [{ text: "進入 PHASE 4：制度重塑", next: "phase4_intro" }]
+            },
+            phase3_resultC: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box success"><div class="feedback-title">🏆 現實的妥協 (相對最佳解)</div><div class="story-text">守住通報與隔離的法律底線，同時穩住業績。但調部門會讓阿泰有「解決提出問題的人」的錯覺。</div></div>
+                    <div class="mitigation-box"><b>導師解析：話語權的重新定調</b>主管必須親自宣告：「因協作未達預期，老軒業務即日起由我覆核。」讓調職變成主管接手爛攤子。</div>
+                `,
+                choices: [{ text: "進入 PHASE 4：制度重塑", next: "phase4_intro" }]
+            },
+
+            phase4_intro: {
+                title: "PHASE 4 : 廢墟中的制度重塑",
+                image: "https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=1000&auto=format&fit=crop",
+                story: `
+                    <div class="story-text">調查結束，委員會判定：「缺乏具體言語攻擊證據，霸凌不成立；但該部門存在嚴重溝通不良與管理疏失。」</div>
+                    <div class="story-text">如果不做出改變，「資深員工卡資源就能逼走新人」的潛規則，將深深扎根在你的團隊裡。危機過後，你該如何從根本上防止悲劇再次發生？</div>
+                `,
+                choices: [
+                    { phase: 4, points: 5,  text: "<b>【文化重塑】舉辦心理安全感工作坊</b><br>請外部專家舉辦工作坊，從思維層面重新建立團隊的互信與友善溝通文化。", next: "final_evaluation" },
+                    { phase: 4, points: 25, text: "<b>【機制透明化】建立資料庫與考核指標</b><br>建立部門共享資料庫，並將「跨部門協作滿意度與資訊分享」正式列入考核硬指標。", next: "final_evaluation" },
+                    { phase: 4, points: 10, text: "<b>【績效管理】啟動不適任輔導與淘汰</b><br>對阿泰輔導、對老軒啟動績效改善計畫 (PIP)，若無法符合公司文化則予以汰換。", next: "final_evaluation" }
+                ]
+            }
+        };
+
+        function preparePhase3() {
+            const isAhTaiResigned = userChoices[2] && userChoices[2].points <= 5;
+            
+            if (isAhTaiResigned) {
+                // 如果阿泰已經離職，第四階段絕對不能再出現對阿泰輔導的選項
+                gameData.phase4_intro.choices = [
+                    { phase: 4, points: 5,  text: "<b>【文化重塑】舉辦心理安全感工作坊</b><br>請外部專家舉辦工作坊，從思維層面重新建立團隊互信。", next: "final_evaluation" },
+                    { phase: 4, points: 25, text: "<b>【機制透明化】建立資料庫與考核指標</b><br>建立部門共享資料庫，並將協作滿意度列入考核硬指標。", next: "final_evaluation" },
+                    { phase: 4, points: 10, text: "<b>【績效管理】啟動老軒的輔導與淘汰</b><br>針對留下的老軒啟動績效改善計畫 (PIP)，若無法配合文化則予以汰換。", next: "final_evaluation" }
+                ];
+
+                gameData.phase3_intro.story = `
+                    <div class="story-text">雖然阿泰已在上週黯然離職，並向 HR 留下了負面控訴，但事情並沒有結束。</div>
+                    <div class="story-text">此時勞動局已正式介入調查，要求公司針對職場霸凌與冷暴力指控提出說明。老軒得知後衝進你辦公室拍桌：</div>
+                    <div class="dialogue-box">
+                        <b>老軒：</b><br>「現在連勞動局都驚動了！都是那小子走前還惡意抹黑。如果公司要查我，我手上的三大客戶誰來顧？」
+                    </div>
+                    <div class="story-text">面對勞動局已介入調查的壓力與老軒的威脅，身為主管，你該如何因應？</div>
+                `;
+                gameData.phase3_intro.choices = [
+                    { phase: 3, points: 25, text: "<b>【積極配合調查】以維護團隊健康氛圍為優先</b><br>優先考量團隊健康氛圍，請老軒先以檢舉為重，積極配合勞動局調查。", next: "phase3_resultA" },
+                    { phase: 3, points: 0,  text: "<b>【和解與合意離職】透過 HR 進行協調</b><br>請 HR 分別約談已離職的阿泰與老軒，做和解協調和合意離職賠償。", next: "phase3_resultB" },
+                    { phase: 3, points: 15, text: "<b>【坦承疏失與分工】向高層扛責並穩住業務</b><br>向 HR 和高層坦承在前期管理有疏失，並透過業務分工來穩住客戶。", next: "phase3_resultC" }
+                ];
+            } else {
+                gameData.phase3_intro.story = `
+                    <div class="story-text">阿泰直接向 HR 遞交了<b><span>「職場霸凌申訴書」</span></b>，附上身心科的「重度焦慮」診斷證明。</div>
+                    <div class="story-text">老軒得知後衝進你辦公室拍桌：</div>
+                    <div class="dialogue-box">
+                        <b>老軒：</b><br>「新人拿張證明公司就要辦我？你要查，我就帶手上三大客戶走人，順便反告他誣告！」
+                    </div>
+                    <div class="story-text">一邊是法定的雇主防制義務，一邊是公司命脈的業績，你該如何處置？</div>
+                `;
+                gameData.phase3_intro.choices = [
+                    { phase: 3, points: 15, text: "<b>【合規調查】通報並隔離行為人</b><br>依規定通報人資啟動調查。為確保程序公正，請老軒暫時居家辦公。", next: "phase3_resultA" },
+                    { phase: 3, points: 0,  text: "<b>【私下溝通與期望對齊】尋求三方共識</b><br>安排三方深度面談進行期望對齊，強調雙方都是人才，尋求內部和解與撤案。", next: "phase3_resultB" },
+                    { phase: 3, points: 25, text: "<b>【隔離與營運並重】通報並調轉申訴人</b><br>暫不動老軒職務，將阿泰暫時轉調至另一小組，實現實體隔離。", next: "phase3_resultC" }
+                ];
+            }
+        }
+
+        function generateEnding() {
+            let totalScore = 0;
+            for (let phase in userChoices) {
+                totalScore += userChoices[phase].points;
+            }
+
+            const c2 = userChoices[2] ? userChoices[2].points : 0;
+            const c3 = userChoices[3] ? userChoices[3].points : 0;
+            const c4 = userChoices[4] ? userChoices[4].points : 0;
+
+            let rank, title, desc, cssClass;
+            let ahTaiEnding = "";
+            let laoXuanEnding = "";
+            let teamEnding = "";
+
+            if (c2 <= 5) {
+                ahTaiEnding = "因為你初期的冷漠應對，阿泰早已心死離職，這家公司再也見不到他的身影。";
+            } else if (c3 === 0) {
+                ahTaiEnding = "因為你在第三階段選擇私下溝通協調，阿泰對公司徹底絕望，拿著錄音檔向勞動局檢舉後憤而離職。";
+            } else if (c3 === 25) {
+                ahTaiEnding = "阿泰被調往其他部門後重新出發。看到你後來推動的制度，他雖然肯定，但已無法為你效力。";
+            } else {
+                ahTaiEnding = "阿泰感受到了主管定調行為底線的決心，身心逐漸恢復，留下來成為了推動新制度的得力助手。";
+            }
+
+            if (c3 === 15 && c2 > 5) {
+                laoXuanEnding = "老軒在被停職調查時感到極度受辱，帶著三大核心客戶跳槽，給公司留下了巨大的業績大洞。";
+            } else if (c3 === 0) {
+                laoXuanEnding = "醜聞爆發後老軒見風轉舵立刻跳槽，臨走前還把責任全推到你頭上。";
+            } else if (c4 === 25) {
+                laoXuanEnding = "老軒留在原部門。在透明化考核與共享資料庫壓力下，他發現卡資源的招式失效，只能乖乖照規矩走。";
+            } else if (c4 === 10) {
+                laoXuanEnding = "老軒在績效改善計畫威脅下，覺得不受尊重，最終帶著部分客戶跳槽離開。";
+            } else {
+                laoXuanEnding = "老軒依然故我，確信自己是部門裡動不得的土皇帝。";
+            }
+
+            if (c4 === 25) {
+                teamEnding = "留下來的同事明白協作與透明才是生存之道。經歷陣痛後，團隊終於重建互信，往高效能邁進。";
+            } else if (c4 === 10) {
+                teamEnding = "部門內充滿恐懼與猜忌，大家學會了少做少錯、明哲保身，失去了創新熱情。";
+            } else if (c3 === 0) {
+                teamEnding = "公司面臨勞檢重罰與公關危機。高層將你視為代罪羔羊，你黯然交出管理職，部門士氣潰散。";
+            } else {
+                teamEnding = "部門維持著表面和平，但毒性文化已經扎根，未來老臣卡資源的悲劇仍會重演。";
+            }
+
+            if (totalScore >= 85) {
+                rank = "變革先鋒";
+                title = "卓越的組織重塑者";
+                cssClass = "success";
+                desc = "你展現了極高超的管理手腕！從定調行為界線、在法規紅線上完美平衡，到最後用系統重塑協作，成功拔除毒性土壤。";
+            } else if (totalScore >= 65) {
+                rank = "救火大隊長";
+                title = "務實的危機處理者";
+                cssClass = "success";
+                desc = "你在危機中做出了許多正確的停損，看清問題本質並願意從制度面下手，團隊正往健康路上邁進。";
+            } else if (totalScore >= 40) {
+                rank = "夾心餅乾";
+                title = "疲於奔命的協調者";
+                cssClass = "warning";
+                desc = "你試圖在老臣與新人之間尋求平衡，但過度妥協讓你失去威信，部門問題只是被暫時掩蓋。";
+            } else {
+                rank = "未爆彈製造機";
+                title = "毒性文化的溫床";
+                cssClass = "danger";
+                desc = "決策充滿致命錯誤（如吃案、檢討受害者），導致團隊崩解並使公司面臨極大法律與公關風險。";
+            }
+
+            return {
+                title: "終局評估報告",
+                story: `
+                    <div class="score-board">
+                        <div style="font-size: 16px; opacity: 0.8; margin-bottom: 5px;">總分：${totalScore} / 100 分</div>
+                        <div class="rank-badge">${rank}</div>
+                    </div>
+                    <div class="feedback-box ${cssClass}" style="margin-top: 10px;">
+                        <div class="feedback-title">${title}</div>
+                        <div class="story-text" style="font-size:16px;">${desc}</div>
+                    </div>
+                    <div class="ending-story">
+                        ${ahTaiEnding ? `<h4>【故事的最終章】</h4>` : ``}
+                        <p><b>阿泰：</b>${ahTaiEnding}</p>
+                        <p><b>老軒：</b>${laoXuanEnding}</p>
+                        <p><b>團隊：</b>${teamEnding}</p>
+                    </div>
+                    <div class="story-text" style="text-align:center; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 30px;">
+                        <h3 style="color:var(--accent-color); margin-bottom:10px; font-size: 22px;">管理，是一連串的權衡與損害控管。</h3>
+                        <p style="font-size: 16px; color: #64748b;">你的每一個選擇，都在形塑團隊的土壤。</p>
+                    </div>
+                `,
+                choices: [
+                    { text: "<b>🔄 重新推演</b><br>回到首頁，嘗試不同的決策路線", next: "home" }
+                ]
+            };
+        }
+
+        function startGame() {
+            historyStack = [];
+            userChoices = {};
+            document.getElementById('home-screen').classList.remove('active');
+            renderNode('phase1_intro');
+        }
+
+        function goBack() {
+            if (historyStack.length > 0) {
+                const prevNode = historyStack.pop();
+                renderNode(prevNode, true);
+            }
+        }
+
+        function renderNode(nodeId, isBack = false) {
+            if (nodeId === 'home') {
+                document.getElementById('top-nav').classList.remove('active');
+                document.getElementById('game-screen').classList.remove('active');
+                document.getElementById('home-screen').classList.add('active');
+                currentNodeId = 'home';
+                historyStack = [];
+                userChoices = {};
+                return;
+            }
+
+            if (nodeId === 'phase3_intro') {
+                preparePhase3();
+            }
+
+            let node;
+            if (nodeId === 'final_evaluation') {
+                node = generateEnding();
+            } else {
+                node = gameData[nodeId];
+            }
+            if (!node) return;
+
+            if (!isBack && currentNodeId !== 'home') {
+                historyStack.push(currentNodeId);
+            }
+            currentNodeId = nodeId;
+
+            document.getElementById('top-nav').classList.add('active');
+            document.getElementById('back-btn').style.visibility = historyStack.length > 0 ? 'visible' : 'hidden';
+
+            const gameScreen = document.getElementById('game-screen');
+            const storyContainer = document.getElementById('story-container');
+            const choicesContainer = document.getElementById('choices-container');
+            
+            gameScreen.classList.remove('active', 'fade-in');
+            void gameScreen.offsetWidth; 
+            
+            document.getElementById('phase-title').innerText = node.title;
+            
+            let contentHTML = '';
+            
+            if (nodeId.includes('_result') && userChoices[nodeId.match(/phase\d/)[0].replace('phase', '')]) {
+                const currentPhaseStr = nodeId.match(/phase\d/)[0].replace('phase', '');
+                const userChoiceObj = userChoices[currentPhaseStr];
+                contentHTML += `
+                    <div class="selected-choice-review">
+                        <strong>你的決策</strong>
+                        ${userChoiceObj.text}
+                    </div>
+                `;
+            }
+
+            if (node.image) {
+                contentHTML += `<img src="${node.image}" alt="情境插圖" class="story-image">`;
+            }
+            contentHTML += node.story;
+            storyContainer.innerHTML = contentHTML;
+            
+            choicesContainer.innerHTML = '';
+            if (node.choices) {
+                node.choices.forEach(choice => {
+                    const btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.innerHTML = choice.text;
+                    btn.onclick = () => {
+                        if (choice.phase) {
+                            userChoices[choice.phase] = { 
+                                text: choice.text, 
+                                points: choice.points 
+                            };
+                        }
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                        renderNode(choice.next);
+                    };
+                    choicesContainer.appendChild(btn);
+                });
+            }
+
+            gameScreen.classList.add('active', 'fade-in');
+            window.scrollTo(0, 0); 
+        }
+    </script>
+</body>
+</html>
