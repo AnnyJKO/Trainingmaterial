@@ -125,13 +125,36 @@
             font-weight: 800;
         }
 
-        .story-image {
+        .pixel-banner {
             width: 100%;
-            height: 280px;
-            object-fit: cover;
+            height: 160px;
+            background-color: #0f172a;
             border-radius: 16px;
             margin-bottom: 35px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 4px solid #1e293b;
+        }
+        .pixel-art {
+            font-family: monospace;
+            font-size: 28px;
+            line-height: 1.2;
+            letter-spacing: 4px;
+            text-align: center;
+            user-select: none;
+        }
+        .pixel-label {
+            margin-top: 10px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #94a3b8;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .story-text { font-size: 18px; line-height: 1.8; margin-bottom: 24px; color: #334155; }
@@ -271,7 +294,7 @@
 
         <div id="home-screen" class="screen active fade-in">
             <h1>隱形風暴</h1>
-            <div class="subtitle">企業防範職場霸凌與效能重塑<br><br>每個決策都沒有標準答案。<br>帶領團隊前行，發掘你的管理影響力！</div>
+            <div class="subtitle">企業防範職場霸凌與效能重塑<br><br>每個決策都沒有標準答案。<br>帶領團隊前行，在難題中找出合適的道路！</div>
             <button class="btn-primary" onclick="startGame()">開始推演</button>
         </div>
 
@@ -290,7 +313,10 @@
         const gameData = {
             phase1_intro: {
                 title: "PHASE 1 : 殘缺交付與向上升級",
-                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
+                pixelArt: `
+                    <div class="pixel-art">📂 💻 ⚡ 📄 ❌</div>
+                    <div class="pixel-label">【 數據交接障礙・資料缺漏衝突 】</div>
+                `,
                 story: `
                     <div class="story-text">阿泰是新進資深員工，負責推動流程優化專案，需要部門老臣「老軒」提供歷史數據。</div>
                     <div class="story-text">老軒表面配合，但寄來的檔案缺漏百出、格式全亂。阿泰請老軒重新整理，老軒推託：「系統匯出來就是這樣，我最近客戶專案滿載，真的沒空幫你手工洗數據。」</div>
@@ -300,21 +326,21 @@
                     </div>
                     <div class="story-text">你詢問老軒，老軒卻一臉無辜：</div>
                     <div class="dialogue-box">
-                        <b>老軒：</b><br>「主管，我絕對全力配合啊！資料我第一天就給他了。他身為專案負責人，自己不具備整併資料的能力，怎麼反而怪我不幫他做苦工？」
+                        <b>老軒：</b><br>「主管，我絕對全力配合啊!資料我第一天就給他了。他身為專案負責人，自己不具備整併資料的能力，怎麼反而怪我不幫他做苦工？」
                     </div>
                     <div class="story-text">面對阿泰的求救與老軒的「反咬一口」，身為主管，第一步該怎麼做？</div>
                 `,
                 choices: [
                     { phase: 1, points: 10, text: "<b>【機會教育】給予阿泰磨練機會</b><br>告訴阿泰：跨部門溝通與資料整併是專案負責人的重要能力，請他先試著將現有資料進行清洗。", next: "phase1_resultA" },
-                    { phase: 1, points: 25, text: "<b>【明確死線】要求老軒以大局為重</b><br>找兩人開會，要求老軒於本週五前提供符合專案所需格式的完整數據給阿泰。", next: "phase1_resultB" },
-                    { phase: 1, points: 5,  text: "<b>【主管支援】親自下場協助溝通</b><br>請阿泰列出缺漏清單，由我親自去和老軒溝通對接，加速推進進度。", next: "phase1_resultC" }
+                    { phase: 1, points: 25, text: "<b>【明確死線】要求老軒以大局為重</b><br>找兩人開會，要求老軒於截止日前提供符合專案所需格式的完整數據給阿泰。", next: "phase1_resultB" },
+                    { phase: 1, points: 5,  text: "<b>【主管支援】親自下場協助溝通</b><br>請阿泰列出缺漏清單，由主管我本人親自去和老軒拿資料來做，跳下去加速推進。", next: "phase1_resultC" }
                 ]
             },
             phase1_resultA: {
                 title: "決策副作用",
                 story: `
                     <div class="feedback-box danger"><div class="feedback-title">⚠️ 落入老臣的卸責陷阱</div><div class="story-text">阿泰覺得主管在包庇老鳥。老軒則確認了「只要隨便丟資料交差，主管就會買單」。阿泰熬夜硬洗數據引發更多錯誤，專案進度落後。</div></div>
-                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>老鳥最愛用「我給了，是他不會用」掩飾不作為。主管應訂出透明的資料格式規範與檢核表，而非檢討受害者。</div>
+                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>主管可以嘗試將衝突轉化為透明制度。老鳥善於推卸責任來掩飾不作為。主管應訂出透明的流程及標準，而非檢討受害者。</div>
                 `,
                 choices: [{ text: "進入 PHASE 2：隱性排擠", next: "phase2_intro" }]
             },
@@ -322,24 +348,27 @@
                 title: "決策副作用",
                 story: `
                     <div class="feedback-box warning"><div class="feedback-title">⚠️ 惡意配合 (Malicious Compliance)</div><div class="story-text">老軒表面答應，週五交了一份「格式全對但邏輯全錯」的報表，逢人便說「主管逼我做白工」。阿泰拿到後依然無法使用。</div></div>
-                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>方向正確，但強壓底線若無客觀的檢核機制，會換來隱性破壞。主管應親自參與首次驗收，剝奪其私下惡搞空間。</div>
+                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>方向正確，不過要注意若強壓底線，且無客觀的檢核機制，可能會換來隱性破壞。主管可以嘗試親自參與首次驗收，剝奪其私下惡搞空間。</div>
                 `,
                 choices: [{ text: "進入 PHASE 2：隱性排擠", next: "phase2_intro" }]
             },
             phase1_resultC: {
                 title: "決策副作用",
                 story: `
-                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 主管降級為高級秘書</div><div class="story-text">專案暫時得救，但老軒學到「只要隨便給，主管就會幫忙擦屁股」；阿泰則覺得被架空。團隊協作機制徹底破裂。</div></div>
-                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>親自出馬是管理大忌，等於默許資深員工擺爛。應建立公開的交接規範，要求老軒按標準交付。</div>
+                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 主管降級為高級秘書</div><div class="story-text">專案暫時得救，但老軒發現「只要為難新人，主管就會把新人換掉」；阿泰則覺得任務被剝奪，喪失了主管的信任，心情委屈又沮喪。</div></div>
+                    <div class="mitigation-box"><b>導師解析：將衝突轉化為制度透明</b>主管接手任務等同忽視同事之間的衝突，默許了資深員工擺爛，也剝奪了新人表現的機會。主管可以和阿泰共同建立任務標準和規範，公開要求老軒按標準交付。</div>
                 `,
                 choices: [{ text: "進入 PHASE 2：隱性排擠", next: "phase2_intro" }]
             },
 
             phase2_intro: {
                 title: "PHASE 2 : 隱性排擠與冷暴力",
-                image: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
+                pixelArt: `
+                    <div class="pixel-art">🗣️ 💬 📉 😒 👥</div>
+                    <div class="pixel-label">【 會議冷暴力・集體排擠效應 】</div>
+                `,
                 story: `
-                    <div class="story-text">在部門會議上，只要阿泰發言，老軒就不發一語，但刻意對旁人嘆氣、交換眼神、滑手機。其他同事怕得罪老軒，也開始排擠阿泰。</div>
+                    <div class="story-text">在部門會議上，只要阿泰發言，老軒就不發一語，但刻意對旁人嘆氣、交換眼神、滑手機。阿泰覺得其他同事也因此開始孤立他。</div>
                     <div class="story-text">阿泰承受不住，私下找你：</div>
                     <div class="dialogue-box">
                         <b>阿泰：</b><br>「主管，我覺得大家都在針對我。群組發問沒人回，開會大家都用看笑話的眼神看我... 我想退出專案，或者請你把我調走。」
@@ -347,7 +376,7 @@
                 `,
                 choices: [
                     { phase: 2, points: 5,  text: "<b>【心理支持】鼓勵阿泰用專業說話</b><br>推動新流程本來就會遇到老員工的防衛心。請他把焦點放在事情上，用專業慢慢贏得信任。", next: "phase2_resultA" },
-                    { phase: 2, points: 25, text: "<b>【行為導正】單獨約談點出問題</b><br>單獨約談老軒，點出他在會議上的非語言行為（如滑手機、嘆氣）已影響團隊氛圍。", next: "phase2_resultB" },
+                    { phase: 2, points: 25, text: "<b>【行為導正】單獨約談點出問題</b><br>單獨約談老軒，直接點出他在會議上的非語言行為（如滑手機、嘆氣）是在針對阿泰，已影響阿泰心情。", next: "phase2_resultB" },
                     { phase: 2, points: 10, text: "<b>【資源調度】調整專案分工</b><br>為保護阿泰身心與進度，將需要依賴老軒的模組交給另一位擅長溝通的同事負責。", next: "phase2_resultC" }
                 ]
             },
@@ -355,7 +384,7 @@
                 title: "決策副作用",
                 story: `
                     <div class="feedback-box danger"><div class="feedback-title">⚠️ 受害者有罪論</div><div class="story-text">阿泰解讀為「主管覺得我能力不夠、無法融入團隊」。隔週阿泰直接遞交離職單，並向 HR 控訴你包庇霸凌。</div></div>
-                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>冷暴力會摧毀團隊效能。應在團隊會議當下，溫和但堅定指正：「老軒，別人報告時我們不滑手機。」</div>
+                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>當同事反映疑似霸凌的狀況，主管應主動介入保護，而非責怪同事抗壓力太低或要他自己堅強。主管可以傾聽並接住情緒，並在後續的會議中，溫和但堅定指正：「老軒，別人報告時我們不滑手機。」</div>
                 `,
                 choices: [{ text: "進入 PHASE 3：申訴炸彈", next: "phase3_intro" }]
             },
@@ -363,7 +392,7 @@
                 title: "決策副作用",
                 story: `
                     <div class="feedback-box warning"><div class="feedback-title">⚠️ 抓不到把柄的狡辯</div><div class="story-text">老軒秒回：「我看手機是回客戶訊息！」隨後在群組暗諷主管搞文字獄偏袒新人，阿泰被更徹底地孤立。</div></div>
-                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>私下面談會淪為各說各話。要在團隊會議當下，公開、明確地指正行為，讓全團隊看見底線。</div>
+                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>不需要與當事者爭論動機，可以直接定調行為界線。在團隊會議當下，可以公開、明確地指正行為，讓全團隊看見底線。</div>
                 `,
                 choices: [{ text: "進入 PHASE 3：申訴炸彈", next: "phase3_intro" }]
             },
@@ -371,54 +400,88 @@
                 title: "決策副作用",
                 story: `
                     <div class="feedback-box danger"><div class="feedback-title">⚠️ 默許毒性文化</div><div class="story-text">向全公司宣告：「只要你夠難搞，就可以不用配合變革，主管拿你沒轍。」老軒成為部門土皇帝。</div></div>
-                    <div class="mitigation-box"><b>導師解析：不要爭論動機，直接定調行為界線</b>逃避無法解決根本問題。必須直面衝突，在團隊會議當下公開指正不當行為。</div>
+                    <div class="mitigation-box"><b>導師解析：隔離是一種選項</b>隔離是一種選項，但不一定能解決問題。下次，你可以試著直面衝突，在團隊會議當下公開指正不當行為。</div>
                 `,
                 choices: [{ text: "進入 PHASE 3：申訴炸彈", next: "phase3_intro" }]
             },
 
             phase3_intro: {
                 title: "PHASE 3 : 申訴炸彈與法規紅線",
-                image: "https://images.unsplash.com/photo-1634152962476-4b8a00e1915c?q=80&w=1000&auto=format&fit=crop",
+                pixelArt: `
+                    <div class="pixel-art">⚖️ 📋 🚨 🏥 💥</div>
+                    <div class="pixel-label">【 職場霸凌申訴・勞檢法規紅線 】</div>
+                `,
                 story: `動態生成內容`,
                 choices: []
             },
             phase3_resultA: {
                 title: "決策副作用",
                 story: `
-                    <div class="feedback-box warning"><div class="feedback-title">⚠️ 兩敗俱傷的合規</div><div class="story-text">老軒感到受辱帶客戶跳槽。調查最終因缺乏直接證據不成立，公司損失重大業績，阿泰最終也離職。</div></div>
-                    <div class="mitigation-box"><b>導師解析：話語權的重新定調</b>合乎法規但缺乏商業彈性。若保留老軒並將阿泰調離，主管必須宣告業務由自己覆核，親上火線。</div>
+                    <div class="feedback-box warning"><div class="feedback-title">⚠️ 兩敗俱傷的合規</div><div class="story-text">老軒感到受辱帶客戶跳槽。調查最終因缺乏直接證據不成立，公司損失重大業績。</div></div>
+                    <div class="mitigation-box"><b>導師解析：話語權的重新定調</b>合乎法規但缺乏商業彈性。主管積極配合法規是很好的做法，但在申訴處理結果確認前，不要單方面偏袒或下結論，避免擅自懲處任一方。</div>
                 `,
                 choices: [{ text: "進入 PHASE 4：制度重塑", next: "phase4_intro" }]
             },
             phase3_resultB: {
                 title: "決策副作用",
                 story: `
-                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 踩踏法律紅線 (吃案)</div><div class="story-text">阿泰偷偷錄音並向勞工局檢舉。公司面臨未盡防護義務的重罰與公關危機，高階主管誠信破產，面臨官司。</div></div>
-                    <div class="mitigation-box"><b>導師解析：吃案是絕對紅線</b>面對醫療證明，「吃案與私下搓湯圓」是絕對不能踩的法律紅線。必須立刻通報並物理隔離。</div>
+                    <div class="feedback-box danger"><div class="feedback-title">⚠️ 內部私了的後續隱患</div><div class="story-text">阿泰與老軒都因為公司企圖私下摸頭、未走正式合規程序而感到極度委屈與不被信任，雙雙憤而離職並帶走核心客戶。公司隨後因違法未盡防護義務遭到勞動局裁罰。</div></div>
+                    <div class="mitigation-box"><b>導師解析：合規程序不可省</b>面對正式申訴，「私下搓湯圓」無法真正解決結構問題，反而會因程序不正義引發更大的信任崩解與法律危機。</div>
                 `,
                 choices: [{ text: "進入 PHASE 4：制度重塑", next: "phase4_intro" }]
             },
-            phase3_resultC: {
+            phase3_resultC_transferred: {
                 title: "決策副作用",
                 story: `
-                    <div class="feedback-box success"><div class="feedback-title">🏆 現實的妥協 (相對最佳解)</div><div class="story-text">守住通報與隔離的法律底線，同時穩住業績。但調部門會讓阿泰有「解決提出問題的人」的錯覺。</div></div>
-                    <div class="mitigation-box"><b>導師解析：話語權的重新定調</b>主管必須親自宣告：「因協作未達預期，老軒業務即日起由我覆核。」讓調職變成主管接手爛攤子。</div>
+                    <div class="feedback-box success"><div class="feedback-title">🏆 現實的妥協 (相對最佳解)</div><div class="story-text">守住通報與隔離的法律底線，同時穩住業績。只是，被調部門的阿泰隱隱有種「我是提出問題的人，反而被解決了」的感受。</div></div>
+                    <div class="mitigation-box"><b>導師解析：話語權的重新定調</b>做職務調整時，主管需謹慎留意當事人的被剝奪感。在不得不做出這個選擇的情況下，主管可以盡可能安排阿泰也有興趣的新專案。主管也要注意對外說法，不將責任放在阿泰身上，而是客觀地宣布：「因協作未達預期，即日起我將直接與老軒對接。」</div>
+                `,
+                choices: [{ text: "進入 PHASE 4：制度重塑", next: "phase4_intro" }]
+            },
+            phase3_resultC_resigned: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box success"><div class="feedback-title">🏆 扛責與分工的停損</div><div class="story-text">阿泰已經離職，你向高層坦承自己前期管理協調不足並主動扛責，同時重新分配老軒的對接窗口，勉強穩住了主要客戶，但部門信任已出現裂痕。</div></div>
+                    <div class="mitigation-box"><b>導師解析：勇於扛責與檢討</b>當初期的溝通不當導致人才流失時，主管勇於向高層扛責是正確的停損做法。但更重要的是，必須檢討為什麼管理警訊沒有在第一時間被接住，避免重蹈覆轍。</div>
                 `,
                 choices: [{ text: "進入 PHASE 4：制度重塑", next: "phase4_intro" }]
             },
 
             phase4_intro: {
                 title: "PHASE 4 : 廢墟中的制度重塑",
-                image: "https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=1000&auto=format&fit=crop",
+                pixelArt: `
+                    <div class="pixel-art">🏛️ 📊 🔗 🛡️ ✨</div>
+                    <div class="pixel-label">【 組織體制修復・建立防禦系統 】</div>
+                `,
                 story: `
                     <div class="story-text">調查結束，委員會判定：「缺乏具體言語攻擊證據，霸凌不成立；但該部門存在嚴重溝通不良與管理疏失。」</div>
                     <div class="story-text">如果不做出改變，「資深員工卡資源就能逼走新人」的潛規則，將深深扎根在你的團隊裡。危機過後，你該如何從根本上防止悲劇再次發生？</div>
                 `,
-                choices: [
-                    { phase: 4, points: 5,  text: "<b>【文化重塑】舉辦心理安全感工作坊</b><br>請外部專家舉辦工作坊，從思維層面重新建立團隊的互信與友善溝通文化。", next: "final_evaluation" },
-                    { phase: 4, points: 25, text: "<b>【機制透明化】建立資料庫與考核指標</b><br>建立部門共享資料庫，並將「跨部門協作滿意度與資訊分享」正式列入考核硬指標。", next: "final_evaluation" },
-                    { phase: 4, points: 10, text: "<b>【績效管理】啟動不適任輔導與淘汰</b><br>對阿泰輔導、對老軒啟動績效改善計畫 (PIP)，若無法符合公司文化則予以汰換。", next: "final_evaluation" }
-                ]
+                choices: []
+            },
+            phase4_resultA: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box warning"><div class="feedback-title">⚠️ 治標不治本的空中樓閣</div><div class="story-text">工作坊結束後大家拍手叫好，但隔天回到工作崗位，資訊不透明與卡資源的老問題依舊存在，形式主義無法根除毒性文化。</div></div>
+                    <div class="mitigation-box"><b>導師解析：文化需要制度來支撐</b>心靈對話無法取代硬性規則。必須將協作行為與績效評估直接掛鉤，制度才能真正落地。</div>
+                `,
+                choices: [{ text: "檢視最終管理評估報告", next: "final_evaluation" }]
+            },
+            phase4_resultB: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box success"><div class="feedback-title">🏆 成功建立防火巷</div><div class="story-text">透過共享資料庫與績效指標，資訊取得不再被少數人壟斷。團隊協作步入正軌。</div></div>
+                    <div class="mitigation-box"><b>導師解析：用系統取代人治</b>當流程與考核透明化，管理成本就會大幅下降。這是長治久安的最佳決策。</div>
+                `,
+                choices: [{ text: "檢視最終管理評估報告", next: "final_evaluation" }]
+            },
+            phase4_resultC: {
+                title: "決策副作用",
+                story: `
+                    <div class="feedback-box warning"><div class="feedback-title">⚠️ 高壓威權與信任危機</div><div class="story-text">主管採取高壓、嚴厲的日常管理與言行規範，雖然暫時壓制了潛在的衝突，但也讓團隊陷入恐懼與防衛心態，成員因深怕觸犯規定而選擇少做少錯。</div></div>
+                    <div class="mitigation-box"><b>導師解析：避免過度威權管理</b>過度依賴威權與嚴厲規範來管理團隊，往往只能治標不能治本。雖然能規範行為，但會扼殺心理安全感與創新熱情，團隊容易走向保守與冷漠。</div>
+                `,
+                choices: [{ text: "檢視最終管理評估報告", next: "final_evaluation" }]
             }
         };
 
@@ -426,13 +489,6 @@
             const isAhTaiResigned = userChoices[2] && userChoices[2].points <= 5;
             
             if (isAhTaiResigned) {
-                // 如果阿泰已經離職，第四階段絕對不能再出現對阿泰輔導的選項
-                gameData.phase4_intro.choices = [
-                    { phase: 4, points: 5,  text: "<b>【文化重塑】舉辦心理安全感工作坊</b><br>請外部專家舉辦工作坊，從思維層面重新建立團隊互信。", next: "final_evaluation" },
-                    { phase: 4, points: 25, text: "<b>【機制透明化】建立資料庫與考核指標</b><br>建立部門共享資料庫，並將協作滿意度列入考核硬指標。", next: "final_evaluation" },
-                    { phase: 4, points: 10, text: "<b>【績效管理】啟動老軒的輔導與淘汰</b><br>針對留下的老軒啟動績效改善計畫 (PIP)，若無法配合文化則予以汰換。", next: "final_evaluation" }
-                ];
-
                 gameData.phase3_intro.story = `
                     <div class="story-text">雖然阿泰已在上週黯然離職，並向 HR 留下了負面控訴，但事情並沒有結束。</div>
                     <div class="story-text">此時勞動局已正式介入調查，要求公司針對職場霸凌與冷暴力指控提出說明。老軒得知後衝進你辦公室拍桌：</div>
@@ -442,9 +498,9 @@
                     <div class="story-text">面對勞動局已介入調查的壓力與老軒的威脅，身為主管，你該如何因應？</div>
                 `;
                 gameData.phase3_intro.choices = [
-                    { phase: 3, points: 25, text: "<b>【積極配合調查】以維護團隊健康氛圍為優先</b><br>優先考量團隊健康氛圍，請老軒先以檢舉為重，積極配合勞動局調查。", next: "phase3_resultA" },
-                    { phase: 3, points: 0,  text: "<b>【和解與合意離職】透過 HR 進行協調</b><br>請 HR 分別約談已離職的阿泰與老軒，做和解協調和合意離職賠償。", next: "phase3_resultB" },
-                    { phase: 3, points: 15, text: "<b>【坦承疏失與分工】向高層扛責並穩住業務</b><br>向 HR 和高層坦承在前期管理有疏失，並透過業務分工來穩住客戶。", next: "phase3_resultC" }
+                    { phase: 3, points: 15, text: "<b>【全力配合調查】暫緩專案，積極提供佐證資料</b><br>優先考量團隊健康氛圍，請老軒暫時退出重要專案，先以檢舉為重，積極配合勞動局調查。", next: "phase3_resultA" },
+                    { phase: 3, points: 0,  text: "<b>【私下溝通與內部和解】以維護公司形象為優先</b><br>為了顧及公司聲譽與避免勞檢，請 HR 分別私下溝通、試圖內部和解，要求阿泰撤回外部指控並安撫老軒。", next: "phase3_resultB" },
+                    { phase: 3, points: 15, text: "<b>【坦承疏失與分工】向高層扛責並穩住業務</b><br>向 HR 和高層坦承在前期管理有疏失，並透過業務分工來穩住客戶。", next: "phase3_resultC_resigned" }
                 ];
             } else {
                 gameData.phase3_intro.story = `
@@ -457,8 +513,27 @@
                 `;
                 gameData.phase3_intro.choices = [
                     { phase: 3, points: 15, text: "<b>【合規調查】通報並隔離行為人</b><br>依規定通報人資啟動調查。為確保程序公正，請老軒暫時居家辦公。", next: "phase3_resultA" },
-                    { phase: 3, points: 0,  text: "<b>【私下溝通與期望對齊】尋求三方共識</b><br>安排三方深度面談進行期望對齊，強調雙方都是人才，尋求內部和解與撤案。", next: "phase3_resultB" },
-                    { phase: 3, points: 25, text: "<b>【隔離與營運並重】通報並調轉申訴人</b><br>暫不動老軒職務，將阿泰暫時轉調至另一小組，實現實體隔離。", next: "phase3_resultC" }
+                    { phase: 3, points: 0,  text: "<b>【私下溝通與內部和解】尋求三方共識</b><br>安排三方私下溝通，試圖內部和解與摸頭，強行要求雙方握手言和以維護公司形象。", next: "phase3_resultB" },
+                    { phase: 3, points: 25, text: "<b>【隔離與營運並重】通報並調轉申訴人</b><br>暫不動老軒職務，將阿泰暫時轉調至另一小組，實現實體隔離。", next: "phase3_resultC_transferred" }
+                ];
+            }
+        }
+
+        // 動態判定 Phase 4 的選項：若老軒在 Phase 3 已經跳槽離職，絕不出現 PIP 淘汰老軒的選項
+        function preparePhase4() {
+            const isLaoXuanResigned = userChoices[3] && userChoices[3].points === 15; // Phase 3 選擇合規調查導致老軒跳槽
+
+            if (isLaoXuanResigned) {
+                gameData.phase4_intro.choices = [
+                    { phase: 4, points: 5,  text: "<b>【文化重塑】舉辦心理安全感工作坊</b><br>請外部專家舉辦工作坊，從思維層面重新建立團隊互信。", next: "phase4_resultA" },
+                    { phase: 4, points: 25, text: "<b>【機制透明化】建立資料庫與考核指標</b><br>建立部門共享資料庫，並將「團隊溝通及合作」列入績效評估的內容之一。", next: "phase4_resultB" },
+                    { phase: 4, points: 10, text: "<b>【嚴厲輔導】每日協作及言行規範</b><br>針對現有團隊直接做嚴格的管理，杜絕任何形式的溝通與協作瑕疵，違反者進入 PIP。", next: "phase4_resultC" }
+                ];
+            } else {
+                gameData.phase4_intro.choices = [
+                    { phase: 4, points: 5,  text: "<b>【文化重塑】舉辦心理安全感工作坊</b><br>請外部專家舉辦工作坊，從思維層面重新建立團隊互信。", next: "phase4_resultA" },
+                    { phase: 4, points: 25, text: "<b>【機制透明化】建立資料庫與考核指標</b><br>建立部門共享資料庫，並將「團隊溝通及合作」列入績效評估的內容之一。", next: "phase4_resultB" },
+                    { phase: 4, points: 10, text: "<b>【嚴厲輔導】每日協作及言行規範</b><br>針對現有團隊直接做嚴格的管理，杜絕任何形式的溝通與協作瑕疵，違反者進入 PIP。", next: "phase4_resultC" }
                 ];
             }
         }
@@ -478,40 +553,72 @@
             let laoXuanEnding = "";
             let teamEnding = "";
 
-            if (c2 <= 5) {
-                ahTaiEnding = "因為你初期的冷漠應對，阿泰早已心死離職，這家公司再也見不到他的身影。";
-            } else if (c3 === 0) {
-                ahTaiEnding = "因為你在第三階段選擇私下溝通協調，阿泰對公司徹底絕望，拿著錄音檔向勞動局檢舉後憤而離職。";
-            } else if (c3 === 25) {
-                ahTaiEnding = "阿泰被調往其他部門後重新出發。看到你後來推動的制度，他雖然肯定，但已無法為你效力。";
+            const isAhTaiResignedEarly = (c2 <= 5);
+            const isCoverUpFlaw = (c3 === 0);
+            
+            // 準確區分：
+            // 1. isLaoXuanResigned (Phase 3 選了合規調查跳槽，即點數為 15)
+            // 2. isResignedAndResigned (阿泰已離職且 Phase 3 選了 15 分的扛責分工)
+            const isLaoXuanResigned = (c3 === 15); 
+            const isAhTaiTransferred = (!isAhTaiResignedEarly && c3 === 25);
+
+            // 1. 阿泰結局判定
+            if (isCoverUpFlaw) {
+                ahTaiEnding = "阿泰因公司企圖私下摸頭掩蓋而感到極度委屈與憤怒，拿著完整記錄向勞動局正式舉報後憤而離職。";
+            } else if (isAhTaiResignedEarly) {
+                ahTaiEnding = "因為你初期的冷漠應對（未給予實質行為界線的保護），阿泰早已心死離職，這家公司再也見不到他的身影。";
+            } else if (isLaoXuanResigned && !isAhTaiResignedEarly) {
+                ahTaiEnding = "調查最終因缺乏直接證據不成立，心灰意冷的阿泰對公司徹底失望，最終選擇了離職。";
+            } else if (isAhTaiTransferred) {
+                ahTaiEnding = "阿泰被調往其他小組後重新出發。看到你後來推動的制度，他雖然肯定，但已無法為你效力。";
+            } else if (isAhTaiResignedEarly && c3 === 15) {
+                ahTaiEnding = "阿泰先前已離職，未參與後續的調查。";
             } else {
                 ahTaiEnding = "阿泰感受到了主管定調行為底線的決心，身心逐漸恢復，留下來成為了推動新制度的得力助手。";
             }
 
-            if (c3 === 15 && c2 > 5) {
-                laoXuanEnding = "老軒在被停職調查時感到極度受辱，帶著三大核心客戶跳槽，給公司留下了巨大的業績大洞。";
-            } else if (c3 === 0) {
-                laoXuanEnding = "醜聞爆發後老軒見風轉舵立刻跳槽，臨走前還把責任全推到你頭上。";
+            // 2. 老軒結局判定（嚴格鎖定：若選了合規調查跳槽，老軒離職；若選了扛責分工，老軒留任）
+            if (isCoverUpFlaw) {
+                laoXuanEnding = "老軒同樣對公司企圖私下摸頭的處理方式感到不滿，見風轉舵帶著核心客戶跳槽離職。";
+            } else if (isLaoXuanResigned && !isAhTaiResignedEarly) {
+                laoXuanEnding = "老軒因合規調查感到受辱，帶著三大核心客戶跳槽離職，原部門留下了一個巨大的業績空缺。";
+            } else if (isLaoXuanResigned && isAhTaiResignedEarly) {
+                laoXuanEnding = "在向高層扛責並重新進行業務分工後，老軒勉強留守原部門，但彼此信任已現裂痕。";
             } else if (c4 === 25) {
                 laoXuanEnding = "老軒留在原部門。在透明化考核與共享資料庫壓力下，他發現卡資源的招式失效，只能乖乖照規矩走。";
             } else if (c4 === 10) {
-                laoXuanEnding = "老軒在績效改善計畫威脅下，覺得不受尊重，最終帶著部分客戶跳槽離開。";
+                laoXuanEnding = "在嚴厲的每日協作與言行規範壓力下，老軒覺得處處受限、不受尊重，最終選擇帶著部分客戶跳槽離開。";
             } else {
                 laoXuanEnding = "老軒依然故我，確信自己是部門裡動不得的土皇帝。";
             }
 
-            if (c4 === 25) {
-                teamEnding = "留下來的同事明白協作與透明才是生存之道。經歷陣痛後，團隊終於重建互信，往高效能邁進。";
-            } else if (c4 === 10) {
-                teamEnding = "部門內充滿恐懼與猜忌，大家學會了少做少錯、明哲保身，失去了創新熱情。";
-            } else if (c3 === 0) {
-                teamEnding = "公司面臨勞檢重罰與公關危機。高層將你視為代罪羔羊，你黯然交出管理職，部門士氣潰散。";
+            // 3. 團隊結局判定
+            if (isCoverUpFlaw) {
+                if (c4 === 25) {
+                    teamEnding = "公司因內部處理失當遭到勞動局裁罰，付出了慘痛代價。但幸好你後續建立了透明化共享資料庫與考核機制，讓留下來的團隊逐漸重建互信，往高效能邁進。";
+                } else if (c4 === 10) {
+                    teamEnding = "公司因內部處理失當遭到勞動局裁罰。加上後續高壓的嚴厲管理，部門內充滿恐懼與猜忌，失去了創新熱情。";
+                } else {
+                    teamEnding = "公司因內部處理失當遭到勞動局裁罰。部門雖維持表面和平，但毒性文化已經扎根，悲劇仍會重演。";
+                }
             } else {
-                teamEnding = "部門維持著表面和平，但毒性文化已經扎根，未來老臣卡資源的悲劇仍會重演。";
+                if (isLaoXuanResigned && !isAhTaiResignedEarly && c4 === 25) {
+                    teamEnding = "雖然老軒帶走客戶造成業績陣痛，但透過你建立的透明化機制，留下的團隊重新振作，迎來健康的協作新氣象。";
+                } else if (isLaoXuanResigned && !isAhTaiResignedEarly) {
+                    teamEnding = "老軒帶走客戶後部門元氣大傷，加上後續未能落實有效的制度重塑，團隊陷入長期低迷與防衛心態。";
+                } else if (isLaoXuanResigned && isAhTaiResignedEarly && c4 === 25) {
+                    teamEnding = "雖然經歷了阿泰離職與管理疏失，但透過你後續建立的透明化共享資料庫，團隊逐漸重建互信，步入正軌。";
+                } else if (c4 === 25) {
+                    teamEnding = "留下來的同事明白協作與透明才是生存之道。經歷陣痛後，團隊終於重建互信，往高效能邁進。";
+                } else if (c4 === 10) {
+                    teamEnding = "部門內充滿恐懼與猜忌，大家學會了少做少錯、明哲保身，失去了創新熱情。";
+                } else {
+                    teamEnding = "部門維持著表面和平，但毒性文化已經扎根，未來老臣卡資源的悲劇仍會重演。";
+                }
             }
 
             if (totalScore >= 85) {
-                rank = "變革先鋒";
+                rank = "領導先鋒";
                 title = "卓越的組織重塑者";
                 cssClass = "success";
                 desc = "你展現了極高超的管理手腕！從定調行為界線、在法規紅線上完美平衡，到最後用系統重塑協作，成功拔除毒性土壤。";
@@ -529,14 +636,19 @@
                 rank = "未爆彈製造機";
                 title = "毒性文化的溫床";
                 cssClass = "danger";
-                desc = "決策充滿致命錯誤（如吃案、檢討受害者），導致團隊崩解並使公司面臨極大法律與公關風險。";
+                desc = "決策累積了太多迴避與妥協（如檢討受害者或私下摸頭），導致團隊信任崩解，危機一觸即發。";
             }
 
             return {
                 title: "終局評估報告",
+                pixelArt: `
+                    <div class="pixel-art">🏆 📊 🎯 🌟 📈</div>
+                    <div class="pixel-label">【 管理成效總結・組織演練報告 】</div>
+                `,
                 story: `
                     <div class="score-board">
                         <div style="font-size: 16px; opacity: 0.8; margin-bottom: 5px;">總分：${totalScore} / 100 分</div>
+                        <div style="font-size: 13px; opacity: 0.7; margin-top: 8px; font-style: italic;">情境純屬虛構，選項故意做得不完美，分數純為有趣、請不要往心裡去。<br>不過，這是真的：在管理難題下，沒有完美的做法，只有較好的選擇。</div>
                         <div class="rank-badge">${rank}</div>
                     </div>
                     <div class="feedback-box ${cssClass}" style="margin-top: 10px;">
@@ -551,7 +663,7 @@
                     </div>
                     <div class="story-text" style="text-align:center; margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 30px;">
                         <h3 style="color:var(--accent-color); margin-bottom:10px; font-size: 22px;">管理，是一連串的權衡與損害控管。</h3>
-                        <p style="font-size: 16px; color: #64748b;">你的每一個選擇，都在形塑團隊的土壤。</p>
+                        <p style="font-size: 16px; color: #64748b;">謝謝你全心投入，讓我們一起建立彼此尊重的友善職場文化</p>
                     </div>
                 `,
                 choices: [
@@ -587,6 +699,10 @@
 
             if (nodeId === 'phase3_intro') {
                 preparePhase3();
+            }
+
+            if (nodeId === 'phase4_intro') {
+                preparePhase4();
             }
 
             let node;
@@ -627,9 +743,12 @@
                 `;
             }
 
-            if (node.image) {
-                contentHTML += `<img src="${node.image}" alt="情境插圖" class="story-image">`;
+            if (node.pixelArt) {
+                contentHTML += `<div class="pixel-banner">${node.pixelArt}</div>`;
+            } else if (nodeId === 'final_evaluation') {
+                contentHTML += `<div class="pixel-banner"><div class="pixel-art">🏆 📊 🎯</div><div class="pixel-label">【 總結報告 】</div></div>`;
             }
+
             contentHTML += node.story;
             storyContainer.innerHTML = contentHTML;
             
